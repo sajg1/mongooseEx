@@ -11,6 +11,7 @@ mongoose.connect(db);
 
 app.use(bodyParser.json());
 
+// READ
 app.get("/", function(req,res) {
   res.send("happy to be here");
 });
@@ -46,6 +47,7 @@ app.get("/books/:id", function(req,res) {
   })
 })
 
+// CREATE
 app.post('/book',  function(req,res){
   var newBook = new Book();
 
@@ -71,6 +73,40 @@ app.post("/book2", function(req,res){
       console.log(book);
       res.send(book);
     }
+  })
+})
+
+// UPDATE
+
+app.put('/book/:id', function(req, res) {
+  Book.findOneAndUpdate({
+    _id:req.params.id
+    },
+    { $set:
+    {title: req.body.title, author: req.body.author, category: req.body.category}},
+    // upsert means if the object does not already exist then to insert it
+    {upsert:true},
+    function(err, newBook) {
+      if(err){
+        res.send("error occured")
+      } else {
+        console.log(newBook);
+        res.send(newBook);
+      }
+    });
+});
+
+// DELETE
+app.delete('/book/:id', function(req,res){
+  Book.findOneAndRemove({
+    _id:req.params.id
+  }, function(err,book){
+      if(err) {
+        res.send('error occured');
+      } else {
+        console.log(book);
+        res.status(204);
+      }
   })
 })
 
