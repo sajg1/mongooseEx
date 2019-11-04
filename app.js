@@ -21,13 +21,28 @@ app.get("/books", function(req,res) {
   .exec(function(err,books){
     if(err) {
       res.send('error has occured')
-    }
-    else{
+    } else {
       console.log(books);
       res.json(books);
     }
   })
 });
+
+app.get("/books/:id", function(req,res) {
+  console.log("getting one book");
+  Book.findOne({
+    // using body-parser below to get id
+    _id:req.params.id
+  })
+  .exec(function(err, book){
+    if(err){
+      res.send("error occured")
+    } else {
+      console.log(book);
+      res.json(book);
+    }
+  })
+})
 
 
 app.listen(port, function() {
