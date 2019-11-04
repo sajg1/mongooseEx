@@ -9,6 +9,8 @@ var db = 'mongodb://localhost/example';
 
 mongoose.connect(db);
 
+app.use(bodyParser.json());
+
 app.get("/", function(req,res) {
   res.send("happy to be here");
 });
@@ -44,6 +46,33 @@ app.get("/books/:id", function(req,res) {
   })
 })
 
+app.post('/book',  function(req,res){
+  var newBook = new Book();
+
+  newBook.title = req.body.title;
+  newBook.author = req.body.author;
+  newBook.category = req.body.category;
+
+  newBook.save(function(err, book) {
+    if(err){
+      res.send("error occured")
+    } else {
+      console.log(book);
+      res.send(book);
+    }
+  })
+})
+// This is the way to do it as described on the mongoose website of queries.
+app.post("/book2", function(req,res){
+  Book.create(req.body, function(err,book){
+    if(err){
+      res.send("error occured")
+    } else {
+      console.log(book);
+      res.send(book);
+    }
+  })
+})
 
 app.listen(port, function() {
   console.log('app listening on port ' + port);
